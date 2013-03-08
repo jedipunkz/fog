@@ -13,9 +13,19 @@ module Fog
           }
 
           vanilla_options = ['metadata', 'accessIPv4', 'accessIPv6',
-                             'availability_zone', 'user_data', 'key_name', 'adminPass']
+                             'availability_zone', 'user_data', 'key_name', 'adminPass',
+                             'net-id', 'v4-fixed_ip', 'port-id']
           vanilla_options.select{|o| options[o]}.each do |key|
             data['server'][key] = options[key]
+          end
+
+          if options['net-id']
+            data['server']['networks'] = []
+            data['server']['networks'] << {
+              'uuid' => options['net-id'],
+              'fixed_ip' => options['v4-fixed_ip'],
+              'port' => options['port-id']
+            }
           end
 
           if options['security_groups']
